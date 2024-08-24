@@ -39,7 +39,7 @@ const Navbar = ({}) => {
   const router = useRouter();
   const pathname = usePathname();
   const wallet = useWallet();
-  const NETWORK: NetworkName = "devnet";
+  const NETWORK: NetworkName = "testnet";
   const MAX_EPOCH = 2; // keep ephemeral keys active for this many Sui epochs from now (1 epoch ~= 24h)
 
   const suiClient = new SuiClient({
@@ -92,9 +92,9 @@ const Navbar = ({}) => {
     if (wallet?.connected && pathname == '/') {
       router.push('/createSurvey');
     }
-    if (!wallet?.connected) {
-      router.push('/');
-    }
+    // if (!wallet?.connected) {
+    //   router.push('/');
+    // }
   }, [wallet?.connected, pathname]);
 
   /* zkLogin end-to-end */

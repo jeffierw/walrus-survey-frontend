@@ -34,7 +34,7 @@ const FormPage = ({}) => {
   const id = searchParams.get('id');
   console.log('test', id);
   const wallet = useWallet();
-  const [formTitle, setFormTitle] = useState<string>("New Form");
+  const [formTitle, setFormTitle] = useState<string>("New Survey");
   const [messageApi, contextHolder] = message.useMessage();
   const [isSubmit, setIsSubmit] = useState(false);
   const [items, setItems] = useState<Item[]>([
@@ -117,7 +117,7 @@ const FormPage = ({}) => {
           <Navbar />
         </div>
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-4">new Form</h1>
+      <h1 className="text-2xl font-bold mb-4">new Survey</h1>
       <form onSubmit={handleSubmit}>
         {/* {formData.list.map((item) => (
           <div key={item.name} className="mb-4">

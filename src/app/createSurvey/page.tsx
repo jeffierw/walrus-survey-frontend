@@ -36,7 +36,7 @@ const CreateSurvey = () => {
   const [spinning, setSpinning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formUrl, setFormUrl] = useState(null);
-  const [formTitle, setFormTitle] = useState<string>("New Form");
+  const [formTitle, setFormTitle] = useState<string>("New Survey");
   const [messageApi, contextHolder] = message.useMessage();
   const [items, setItems] = useState<Item[]>([
     {
@@ -156,20 +156,20 @@ const CreateSurvey = () => {
       } else {
         messageApi.open({
           type: 'error',
-          content: 'Create form failed',
+          content: 'Create survey failed',
         });
       }
     } catch (error) {
       messageApi.open({
         type: 'error',
-        content: 'Create form failed',
+        content: 'Create survey failed',
       });
     } finally {
       setSpinning(false);
     }
   };
 
-  const absoluteUrl = formUrl ? `${window.location.origin}/form?id=${formUrl}` : '';
+  const absoluteUrl = formUrl ? `${window.location.origin}/survey?id=${formUrl}` : '';
 
   return (
     <>
