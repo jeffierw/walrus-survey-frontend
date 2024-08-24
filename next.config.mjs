@@ -4,10 +4,6 @@ const rewrites = () => {
     {
       source: '/api/:path*',
       destination: `http://localhost:31411/api/:path*`
-    },
-    {
-      source: '/walrus/:path*',
-      destination: `https://aggregator-devnet.walrus.space/v1/:path*`
     }
   ]
 };

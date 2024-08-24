@@ -6,6 +6,7 @@ import '@mysten/dapp-kit/dist/index.css';
 import {useWallet} from '@suiet/wallet-kit';
 import { message, Spin } from 'antd';
 import confetti from 'canvas-confetti';
+import { useNavbar } from "../../../context/NavbarContext";
 
 enum ItemType {
   Text = 1,
@@ -33,6 +34,7 @@ interface Form {
 const CreateSurvey = () => {
   const wallet = useWallet();
   const router = useRouter();
+  const { openLoginbox } = useNavbar();
   const [spinning, setSpinning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formUrl, setFormUrl] = useState(null);
@@ -48,6 +50,10 @@ const CreateSurvey = () => {
   ]);
 
   const addNewField = () => {
+    if (!wallet.connected) {
+      openLoginbox()
+      return;
+    }
     const newItem: Item = {
       title: `Question ${items.length + 1}`,
       name: `question${items.length + 1}`,
@@ -82,12 +88,15 @@ const CreateSurvey = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 防止默认提交
-
+    if (!wallet.connected) {
+      openLoginbox()
+      return;
+    }
     // 校验表单内容
     if (items.length === 0) {
       messageApi.open({
         type: 'warning',
-        content: 'Please add new field',
+        content: 'Please Add New Field',
       });
       return;
     }
@@ -156,13 +165,13 @@ const CreateSurvey = () => {
       } else {
         messageApi.open({
           type: 'error',
-          content: 'Create survey failed',
+          content: 'Create Survey Failed',
         });
       }
     } catch (error) {
       messageApi.open({
         type: 'error',
-        content: 'Create survey failed',
+        content: 'Create Survey Failed',
       });
     } finally {
       setSpinning(false);
@@ -190,9 +199,9 @@ const CreateSurvey = () => {
             <p className="text-2xl text-[#63948c] font-medium text-left leading-relaxed mb-4">
               Congratulations! 🎉 You've created a survey! Copy and paste this <a
               href={absoluteUrl}
-              // target="_blank"
+              target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 hover:underline text-center"
+              className="text-blue-500 underline text-center"
             >
                URL
             </a> to share your survey in an email, on a website, or on social media.
@@ -205,7 +214,7 @@ const CreateSurvey = () => {
               type="text"
               value={formTitle}
               onChange={(e) => setFormTitle(e.target.value)}
-              className="text-4xl font-bold mb-6 border-none focus:outline-none text-center w-full bg-transparent"
+              className="text-4xl font-semibold mb-6 border-none focus:outline-none text-center w-full bg-transparent text-[#63948c]"
               autoFocus
               onFocus={(e) => {
                 const val = e.target.value;
@@ -216,48 +225,72 @@ const CreateSurvey = () => {
             {items.map((item, index) => (
               <div
                 key={index}
-                className="relative mb-4 w-full group"
+                className="relative mb-4 w-full group flex items-center"
               >
-                <input
-                  type="text"
-                  required
-                  value={item.value || ""}
-                  onChange={(e) => handleItemChange(index, e.target.value)}
-                  placeholder={item.placeholder}
-                  className="text-lg w-full p-2 border-gray-300 focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveField(index)}
-                  className="absolute top-0 right-0 -mt-1 -mr-1 p-1 text-red-500 hover:text-red-700 hidden group-hover:block"
-                >
+                <div className="relative w-full flex">
+                  <input
+                    type="text"
+                    required
+                    value={item.value || ""}
+                    onChange={(e) => handleItemChange(index, e.target.value)}
+                    placeholder={item.placeholder}
+                    className="text-lg w-full p-2 border border-gray-100 focus:outline-none focus:border-[#63948c] focus:shadow-sm focus:shadow-gray-300"
+                    style={{ paddingRight: "2rem" }}  // 为了给按钮留出空间
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveField(index)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 hidden group-hover:block"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19 7H5m14 0l-1.342 12.195A2 2 0 0115.667 21H8.333a2 2 0 01-1.991-1.805L5 7m4 0V4a1 1 0 011-1h4a1 1 0 011 1v3M10 11v6m4-6v6"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            
+            ))}
+            <div className="mb-4 w-full">
+              <button
+                type="button"
+                onClick={addNewField}
+                className="text-base rounded-s px-6 py-2 w-full border border-dotted border-gray-300 bg-white text-[#5b91a5] flex items-center justify-center gap-2 transition duration-200"
+              >
+                <div className="bg-white p-1 rounded-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="h-4 w-4 text-[#5b91a5]"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="black"
+                    stroke="currentColor"
                     strokeWidth={2}
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
+                      d="M12 4v16m8-8H4"
                     />
                   </svg>
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={addNewField}
-              className="text-base px-6 py-2 bg-[#5b91a5] text-black rounded-full transition duration-200"
-            >
-              Add New Field
-            </button>
+                </div>
+                Add New Field
+              </button>
+            </div>
+
+
             <button
               type="submit"
-              className="text-base px-6 py-2 bg-[#5b91a5] text-black rounded-md mt-4 transition duration-200"
+              className="text-base px-16 py-2 bg-[#5b91a5] text-white rounded-full mt-4 transition duration-200"
             >
               Finish
             </button>
