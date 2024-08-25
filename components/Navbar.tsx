@@ -92,9 +92,9 @@ const Navbar = ({}) => {
     if (wallet?.connected && pathname == '/') {
       router.push('/createSurvey');
     }
-    if (!wallet?.connected) {
-      router.push('/');
-    }
+    // if (!wallet?.connected) {
+    //   router.push('/');
+    // }
   }, [wallet?.connected, pathname]);
 
   /* zkLogin end-to-end */
