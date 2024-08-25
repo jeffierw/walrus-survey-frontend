@@ -50,31 +50,37 @@ const FormPage = ({}) => {
 
   const getWalrusData = async () => {
     try {      
-      const response = await fetch(`/api/v1/form/${id}`);
-      const reader = response.body?.getReader();
-      const chunks: Uint8Array[] = [];
-      let done = false;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/form/${id}`);
+      // const reader = response.body?.getReader();
+      // const chunks: Uint8Array[] = [];
+      // let done = false;
 
-      while (!done) {
-        const { value, done: readerDone } = await reader?.read()!;
-        if (value) {
-          chunks.push(value);
-        }
-        done = readerDone;
+      // while (!done) {
+      //   const { value, done: readerDone } = await reader?.read()!;
+      //   if (value) {
+      //     chunks.push(value);
+      //   }
+      //   done = readerDone;
+      // }
+
+      // // 将 Uint8Array[] 转换为单个 Uint8Array
+      // const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      // let offset = 0;
+      // for (const chunk of chunks) {
+      //   combinedChunks.set(chunk, offset);
+      //   offset += chunk.length;
+      // }
+
+      // // 1. 将数据转换为文本
+      // const text = new TextDecoder().decode(combinedChunks);
+      // console.log("Text:", text, JSON.parse(text));
+      // const res = JSON.parse(text)
+      const res = {
+        "code": 200,
+        "message": "",
+        "data": "{\"id\":\"0xaf0e50c4619f5bdbcda69b33807b32088d53c8bcc928e5ee3fb343bb3f37492e\",\"title\":\"test survey\",\"itemList\":[{\"title\":\"test question 1\",\"name\":\"question1\",\"type\":1,\"value\":\"\"},{\"title\":\"test question 2\",\"name\":\"question2\",\"type\":1,\"value\":\"\"}]}"
       }
-
-      // 将 Uint8Array[] 转换为单个 Uint8Array
-      const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-      let offset = 0;
-      for (const chunk of chunks) {
-        combinedChunks.set(chunk, offset);
-        offset += chunk.length;
-      }
-
-      // 1. 将数据转换为文本
-      const text = new TextDecoder().decode(combinedChunks);
-      console.log("Text:", text, JSON.parse(text));
-      const res = JSON.parse(text)
       if (res.code === 200) {
         const walrusData = JSON.parse(res.data);
         console.log('===', walrusData);
@@ -111,13 +117,23 @@ const FormPage = ({}) => {
       return;
     }
     console.log('====', formValues);
-    
+    try {
+      setSpinning(true)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsSubmit(true)
+    } catch (error) {
+      
+    } finally {
+      setSpinning(false)
+    }
   };
 
   // 处理输入变化
   const handleChange = (name: string, value: string) => {
     setFormValues(prev => ({ ...prev, [name]: value }));
   };
+
+  const absoluteUrl = `${window.location.origin}/createSurvey`;
 
   return (
     <>
@@ -134,36 +150,59 @@ const FormPage = ({}) => {
         <div className="absolute right-8 mt-8">
           <Navbar />
         </div>
-        {formData?.itemList.length > 0 && <div className="flex flex-col items-center pt-12">
-          <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col items-center">
-            <h1 className="text-4xl font-semibold mb-6 border-none text-center w-full text-[#63948c]">{formData?.title}</h1>
-            {formData?.itemList.map((item, index) => (
-              <div key={index} className="relative mb-4 w-full group">
-                <label htmlFor={item.name} className="block font-medium mb-2 text-[#63948c]">
-                  Q{index + 1}: {item.title}
-                </label>
-                <input
-                  type="text"
-                  id={item.name}
-                  name={item.name}
-                  value={formValues[item.name] || ""}
-                  onChange={(e) => handleChange(item.name, e.target.value)}
-                  className="text-lg w-full p-2 border border-gray-100 focus:outline-none focus:border-[#63948c] focus:shadow-sm focus:shadow-gray-300"
-                  placeholder={item.placeholder || ""}
-                />
-              </div>
-            ))}
-            <div className="flex justify-between mt-6">
-              <button
-                type="submit"
-                className="text-base px-16 py-2 bg-[#5b91a5] text-white rounded-full transition duration-200"
-              >
-                Submit
-              </button>
+        {formData?.itemList.length > 0 && (
+        isSubmit ? (
+          <div className="flex flex-col items-center pt-48 px-4">
+            <div className="max-w-md w-full">
+              <p className="text-2xl text-[#63948c] font-medium text-left leading-relaxed mb-4">
+                Thank you for your participation in this survey! 🎉 Click the {" "}
+                <a
+                  href={absoluteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline text-center"
+                >
+                  Link
+                </a>{" "}
+                to create your own Web3 survey.
+              </p>
             </div>
-          </form>
-        </div>
-        }
+          </div>
+        ) : (
+          <div className="flex flex-col items-center pt-12">
+            <form onSubmit={handleSubmit} className="w-full max-w-md flex flex-col items-center">
+              <h1 className="text-4xl font-semibold mb-6 border-none text-center w-full text-[#63948c]">
+                {formData?.title}
+              </h1>
+              {formData?.itemList.map((item, index) => (
+                <div key={index} className="relative mb-4 w-full group">
+                  <label htmlFor={item.name} className="block font-medium mb-2 text-[#63948c]">
+                    Q{index + 1}: {item.title}
+                  </label>
+                  <input
+                    type="text"
+                    id={item.name}
+                    name={item.name}
+                    required
+                    value={formValues[item.name] || ""}
+                    onChange={(e) => handleChange(item.name, e.target.value)}
+                    className="text-lg w-full p-2 border border-gray-100 focus:outline-none focus:border-[#63948c] focus:shadow-sm focus:shadow-gray-300"
+                    placeholder={item.placeholder || ""}
+                  />
+                </div>
+              ))}
+              <div className="flex justify-between mt-6">
+                <button
+                  type="submit"
+                  className="text-base px-16 py-2 bg-[#5b91a5] text-white rounded-full transition duration-200"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        )
+      )}      
         </div>
     </div>
   </main>

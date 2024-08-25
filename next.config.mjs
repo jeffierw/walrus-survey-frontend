@@ -12,6 +12,7 @@ const nextConfig = {
       missingSuspenseWithCSRBailout: false,
     },
     rewrites,
+    output: 'export',
 };
 
 export default nextConfig;
