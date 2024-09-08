@@ -90,11 +90,11 @@ const Navbar = ({}) => {
     console.log('test', wallet);
     
     if (wallet?.connected && pathname == '/') {
-      router.push('/createSurvey');
+      router.push('/dashboard');
     }
-    // if (!wallet?.connected) {
-    //   router.push('/');
-    // }
+    if (!wallet?.connected) {
+      router.push('/');
+    }
   }, [wallet?.connected, pathname]);
 
   /* zkLogin end-to-end */

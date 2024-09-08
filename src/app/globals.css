@@ -70,3 +70,8 @@ body {
   }
 }
 
+.container::after {
+  content: '';
+  flex: auto;
+}
+

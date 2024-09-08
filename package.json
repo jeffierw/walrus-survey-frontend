@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "module": "esnext",
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.1",
     "@aptos-labs/ts-sdk": "1.10.0-zeta.1",

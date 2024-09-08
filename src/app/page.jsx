@@ -15,7 +15,7 @@ export default function Home() {
 
   const startSurvey = () => {
     if (wallet?.connected) {
-      router.push(`/createSurvey`);
+      router.push(`/dashboard`);
     } else {
       toggleLoginbox()
     }

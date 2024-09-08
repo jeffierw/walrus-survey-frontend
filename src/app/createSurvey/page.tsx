@@ -113,45 +113,45 @@ const CreateSurvey = () => {
 
     try {
       setSpinning(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-form`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-form`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
       
-      // const reader = response.body?.getReader();
-      // const chunks: Uint8Array[] = [];
-      // let done = false;
+      const reader = response.body?.getReader();
+      const chunks: Uint8Array[] = [];
+      let done = false;
 
-      // while (!done) {
-      //   const { value, done: readerDone } = await reader?.read()!;
-      //   if (value) {
-      //     chunks.push(value);
-      //   }
-      //   done = readerDone;
-      // }
-
-      // // 将 Uint8Array[] 转换为单个 Uint8Array
-      // const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-      // let offset = 0;
-      // for (const chunk of chunks) {
-      //   combinedChunks.set(chunk, offset);
-      //   offset += chunk.length;
-      // }
-
-      // // 1. 将数据转换为文本
-      // const text = new TextDecoder().decode(combinedChunks);
-      // console.log("Text:", text, JSON.parse(text));
-      // const res = JSON.parse(text)
-      
-      const res = {
-        code: 200,
-        message: "",
-        data: "{\"newlyCreated\":{\"blobObject\":{\"id\":\"0x11c12d9e42046d3417c13026dd4e6095b166cc28b31e16a11964d1c1efcbd982\",\"storedEpoch\":0,\"blobId\":\"nX_dlVHNnNai7I8s8gtdlxxtLvOvLisD0BInJwMOh-4\",\"size\":244,\"erasureCodeType\":\"RedStuff\",\"certifiedEpoch\":0,\"storage\":{\"id\":\"0x3481abebcef76c23e2505ee8fcefc8dc1eda8d26b749bad73ddf478bc60975d2\",\"startEpoch\":0,\"endEpoch\":1,\"storageSize\":65023000}},\"encodedSize\":65023000,\"cost\":3175000}}"
+      while (!done) {
+        const { value, done: readerDone } = await reader?.read()!;
+        if (value) {
+          chunks.push(value);
+        }
+        done = readerDone;
       }
+
+      // 将 Uint8Array[] 转换为单个 Uint8Array
+      const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      let offset = 0;
+      for (const chunk of chunks) {
+        combinedChunks.set(chunk, offset);
+        offset += chunk.length;
+      }
+
+      // 1. 将数据转换为文本
+      const text = new TextDecoder().decode(combinedChunks);
+      console.log("Text:", text, JSON.parse(text));
+      const res = JSON.parse(text)
+      
+      // const res = {
+      //   code: 200,
+      //   message: "",
+      //   data: "{\"newlyCreated\":{\"blobObject\":{\"id\":\"0x11c12d9e42046d3417c13026dd4e6095b166cc28b31e16a11964d1c1efcbd982\",\"storedEpoch\":0,\"blobId\":\"nX_dlVHNnNai7I8s8gtdlxxtLvOvLisD0BInJwMOh-4\",\"size\":244,\"erasureCodeType\":\"RedStuff\",\"certifiedEpoch\":0,\"storage\":{\"id\":\"0x3481abebcef76c23e2505ee8fcefc8dc1eda8d26b749bad73ddf478bc60975d2\",\"startEpoch\":0,\"endEpoch\":1,\"storageSize\":65023000}},\"encodedSize\":65023000,\"cost\":3175000}}"
+      // }
       if (res.code === 200) {
         confetti({
           particleCount: 100,
@@ -201,9 +201,9 @@ const CreateSurvey = () => {
         <div className="absolute right-8 mt-8">
           <Navbar />
         </div>
-        {isSuccess ? <div className="flex flex-col items-center pt-48 px-4">
+        {isSuccess ? <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-60%] max-w-[720px]">
           <div className="max-w-md w-full">
-            <p className="text-2xl text-[#63948c] font-medium text-left leading-relaxed mb-4">
+            <p className="text-3xl text-[#63948c] font-medium text-left leading-relaxed mb-4">
               Congratulations! 🎉 You've created a survey! Copy and paste this <a
               href={absoluteUrl}
               target="_blank"

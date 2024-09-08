@@ -50,37 +50,37 @@ const FormPage = ({}) => {
 
   const getWalrusData = async () => {
     try {      
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/form/${id}`);
-      // const reader = response.body?.getReader();
-      // const chunks: Uint8Array[] = [];
-      // let done = false;
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/form/${id}`);
+      const reader = response.body?.getReader();
+      const chunks: Uint8Array[] = [];
+      let done = false;
 
-      // while (!done) {
-      //   const { value, done: readerDone } = await reader?.read()!;
-      //   if (value) {
-      //     chunks.push(value);
-      //   }
-      //   done = readerDone;
-      // }
-
-      // // 将 Uint8Array[] 转换为单个 Uint8Array
-      // const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-      // let offset = 0;
-      // for (const chunk of chunks) {
-      //   combinedChunks.set(chunk, offset);
-      //   offset += chunk.length;
-      // }
-
-      // // 1. 将数据转换为文本
-      // const text = new TextDecoder().decode(combinedChunks);
-      // console.log("Text:", text, JSON.parse(text));
-      // const res = JSON.parse(text)
-      const res = {
-        "code": 200,
-        "message": "",
-        "data": "{\"id\":\"0xaf0e50c4619f5bdbcda69b33807b32088d53c8bcc928e5ee3fb343bb3f37492e\",\"title\":\"test survey\",\"itemList\":[{\"title\":\"test question 1\",\"name\":\"question1\",\"type\":1,\"value\":\"\"},{\"title\":\"test question 2\",\"name\":\"question2\",\"type\":1,\"value\":\"\"}]}"
+      while (!done) {
+        const { value, done: readerDone } = await reader?.read()!;
+        if (value) {
+          chunks.push(value);
+        }
+        done = readerDone;
       }
+
+      // 将 Uint8Array[] 转换为单个 Uint8Array
+      const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      let offset = 0;
+      for (const chunk of chunks) {
+        combinedChunks.set(chunk, offset);
+        offset += chunk.length;
+      }
+
+      // 1. 将数据转换为文本
+      const text = new TextDecoder().decode(combinedChunks);
+      console.log("Text:", text, JSON.parse(text));
+      const res = JSON.parse(text)
+      // const res = {
+      //   "code": 200,
+      //   "message": "",
+      //   "data": "{\"id\":\"0xaf0e50c4619f5bdbcda69b33807b32088d53c8bcc928e5ee3fb343bb3f37492e\",\"title\":\"test survey\",\"itemList\":[{\"title\":\"test question 1\",\"name\":\"question1\",\"type\":1,\"value\":\"\"},{\"title\":\"test question 2\",\"name\":\"question2\",\"type\":1,\"value\":\"\"}]}"
+      // }
       if (res.code === 200) {
         const walrusData = JSON.parse(res.data);
         console.log('===', walrusData);
