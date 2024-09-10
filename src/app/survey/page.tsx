@@ -147,7 +147,7 @@ const FormPage = ({}) => {
         <div className="absolute left-8">
           <img src="/logo2.png" className="h-32 mt-4 ml-8" alt="logo" />
         </div>
-        <div className="absolute right-8 mt-8">
+        <div className="absolute right-8 mt-8 z-10">
           <Navbar />
         </div>
         {formData?.itemList.length > 0 && (

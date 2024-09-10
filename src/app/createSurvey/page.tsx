@@ -198,7 +198,7 @@ const CreateSurvey = () => {
         <div className="absolute left-8">
           <img src="/logo2.png" className="h-32 mt-4 ml-8" alt="logo" />
         </div>
-        <div className="absolute right-8 mt-8">
+        <div className="absolute right-8 mt-8 z-10">
           <Navbar />
         </div>
         {isSuccess ? <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-60%] max-w-[720px]">

@@ -86,16 +86,16 @@ const Navbar = ({}) => {
     };
   }, []);
 
-  useEffect(() => {    
-    console.log('test', wallet);
+  // useEffect(() => {    
+  //   console.log('test', wallet);
     
-    if (wallet?.connected && pathname == '/') {
-      router.push('/dashboard');
-    }
-    if (!wallet?.connected) {
-      router.push('/');
-    }
-  }, [wallet?.connected, pathname]);
+  //   if (wallet?.connected && pathname == '/') {
+  //     router.push('/dashboard');
+  //   }
+  //   if (!wallet?.connected) {
+  //     router.push('/');
+  //   }
+  // }, [wallet?.connected, pathname]);
 
   /* zkLogin end-to-end */
 

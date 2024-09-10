@@ -11,7 +11,19 @@ import { useRouter, usePathname } from 'next/navigation';
 export default function Home() {
   const { loginbox, toggleLoginbox } = useNavbar();
   const wallet = useWallet();
-  const router = useRouter()
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {    
+    console.log('test', wallet);
+    
+    if (wallet?.connected && pathname == '/') {
+      router.push('/dashboard');
+    }
+    if (!wallet?.connected) {
+      router.push('/');
+    }
+  }, [wallet?.connected, pathname]);
 
   const startSurvey = () => {
     if (wallet?.connected) {
@@ -30,7 +42,7 @@ style={{backgroundImage: 'url(/landing.png)', backgroundSize:'cover', background
     <Link href="/" className="absolute left-8">
           <img src="/logo1.png" className="h-32 mt-4 ml-8"/>
     </Link>
-    <div className="absolute right-8 mt-8">
+    <div className="absolute right-8 mt-8 z-10">
       <Navbar 
       />
     </div>
