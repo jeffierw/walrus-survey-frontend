@@ -6,6 +6,7 @@ import '@mysten/dapp-kit/dist/index.css';
 import {useWallet} from '@suiet/wallet-kit';
 import { message, Spin } from 'antd';
 import { useNavbar } from "../../../context/NavbarContext";
+import confetti from 'canvas-confetti';
 
 enum ItemType {
   Text = 1,
@@ -112,6 +113,8 @@ const FormPage = ({}) => {
   // 处理表单提交
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log('test', wallet.connected);
+    
     if (!wallet.connected) {
       openLoginbox()
       return;
@@ -119,10 +122,66 @@ const FormPage = ({}) => {
     console.log('====', formValues);
     try {
       setSpinning(true)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsSubmit(true)
-    } catch (error) {
+      // 将formValues的值填入formData的value中
+      const updatedFormData = {
+        ...formData,
+        itemList: formData?.itemList.map(item => ({
+          ...item,
+          value: formValues[item.name] || ''
+        }))
+      };
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-form`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedFormData),
+      });
       
+      const reader = response.body?.getReader();
+      const chunks: Uint8Array[] = [];
+      let done = false;
+
+      while (!done) {
+        const { value, done: readerDone } = await reader?.read()!;
+        if (value) {
+          chunks.push(value);
+        }
+        done = readerDone;
+      }
+
+      // 将 Uint8Array[] 转换为单个 Uint8Array
+      const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      let offset = 0;
+      for (const chunk of chunks) {
+        combinedChunks.set(chunk, offset);
+        offset += chunk.length;
+      }
+
+      // 1. 将数据转换为文本
+      const text = new TextDecoder().decode(combinedChunks);
+      console.log("Text:", text, JSON.parse(text));
+      const res = JSON.parse(text)
+      
+      if (res.code === 200) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        setIsSubmit(true)
+
+        const walrusData = JSON.parse(res.data);
+        console.log('test', walrusData);
+        
+      } else {
+        messageApi.open({
+          type: 'error',
+          content: 'Submit Survey Failed',
+        });
+      }
+    } catch (error) {
+      throw new Error("Submit failed")
     } finally {
       setSpinning(false)
     }
@@ -184,8 +243,8 @@ const FormPage = ({}) => {
                     id={item.name}
                     name={item.name}
                     required
-                    value={formValues[item.name] || ""}
-                    onChange={(e) => handleChange(item.name, e.target.value)}
+                    value={formValues[item.title] || ""}
+                    onChange={(e) => handleChange(item.title, e.target.value)}
                     className="text-lg w-full p-2 border border-gray-100 focus:outline-none focus:border-[#63948c] focus:shadow-sm focus:shadow-gray-300"
                     placeholder={item.placeholder || ""}
                   />

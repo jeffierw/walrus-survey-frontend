@@ -111,6 +111,81 @@ const CreateSurvey = () => {
       description: ""
     };
 
+    // try {
+    //   setSpinning(true);
+    //   const response = await fetch(`https://yepw.top/api/v1/getBlob`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     // body: JSON.stringify(formData)
+    //     body: JSON.stringify({ id: "R6oRdjGwOrUJKihKmAh2UZ84Kt4uXePje6Mn8WIcqZk" }),
+    //   });
+    //   console.log('test', response);
+      
+      
+      // const reader = response.body?.getReader();
+      // const chunks: Uint8Array[] = [];
+      // let done = false;
+
+      // while (!done) {
+      //   const { value, done: readerDone } = await reader?.read()!;
+      //   if (value) {
+      //     chunks.push(value);
+      //   }
+      //   done = readerDone;
+      // }
+
+      // // 将 Uint8Array[] 转换为单个 Uint8Array
+      // const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      // let offset = 0;
+      // for (const chunk of chunks) {
+      //   combinedChunks.set(chunk, offset);
+      //   offset += chunk.length;
+      // }
+
+      // // 1. 将数据转换为文本
+      // const text = new TextDecoder().decode(combinedChunks);
+      // console.log("Text:", text, JSON.parse(text));
+      // const res = JSON.parse(text)
+      
+      // // const res = {
+      // //   code: 200,
+      // //   message: "",
+      // //   data: "{\"newlyCreated\":{\"blobObject\":{\"id\":\"0x11c12d9e42046d3417c13026dd4e6095b166cc28b31e16a11964d1c1efcbd982\",\"storedEpoch\":0,\"blobId\":\"nX_dlVHNnNai7I8s8gtdlxxtLvOvLisD0BInJwMOh-4\",\"size\":244,\"erasureCodeType\":\"RedStuff\",\"certifiedEpoch\":0,\"storage\":{\"id\":\"0x3481abebcef76c23e2505ee8fcefc8dc1eda8d26b749bad73ddf478bc60975d2\",\"startEpoch\":0,\"endEpoch\":1,\"storageSize\":65023000}},\"encodedSize\":65023000,\"cost\":3175000}}"
+      // // }
+      // if (res.code === 200) {
+      //   confetti({
+      //     particleCount: 100,
+      //     spread: 70,
+      //     origin: { y: 0.6 }
+      //   });
+      //   setIsSuccess(true);
+      //   const walrusData = JSON.parse(res.data);
+      //   if (walrusData?.newlyCreated) {
+      //     setFormUrl(walrusData.newlyCreated?.blobObject?.blobId)
+      //     console.log('test1', walrusData.newlyCreated?.blobObject?.blobId);
+      //     // router.push(`/form/${walrusData.newlyCreated?.blobObject?.blobId}`);
+      //   } else if (walrusData?.alreadyCertified) {
+      //     setFormUrl(walrusData.alreadyCertified?.blobId)
+      //     console.log('test2', walrusData.alreadyCertified?.blobId);
+      //     // router.push(`/form/${walrusData.alreadyCertified?.blobId}`);
+      //   }
+      // } else {
+      //   messageApi.open({
+      //     type: 'error',
+      //     content: 'Create Survey Failed',
+      //   });
+      // }
+    // } catch (error) {
+    //   messageApi.open({
+    //     type: 'error',
+    //     content: 'Create Survey Failed',
+    //   });
+    // } finally {
+    //   setSpinning(false);
+    // }
+
     try {
       setSpinning(true);
       // await new Promise((resolve) => setTimeout(resolve, 1000));
