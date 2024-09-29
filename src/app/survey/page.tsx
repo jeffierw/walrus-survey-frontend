@@ -34,7 +34,7 @@ const FormPage = ({}) => {
   const searchParams = useSearchParams();
   const { openLoginbox } = useNavbar();
   const id = searchParams.get('id');
-  console.log('test', id);
+  const formId = searchParams.get("formId")
   const wallet = useWallet();
   const [formTitle, setFormTitle] = useState<string>("New Survey");
   const [messageApi, contextHolder] = message.useMessage();
@@ -57,6 +57,8 @@ const FormPage = ({}) => {
       const chunks: Uint8Array[] = [];
       let done = false;
 
+      console.log('test', response);
+      
       while (!done) {
         const { value, done: readerDone } = await reader?.read()!;
         if (value) {
@@ -127,9 +129,14 @@ const FormPage = ({}) => {
         ...formData,
         itemList: formData?.itemList.map(item => ({
           ...item,
-          value: formValues[item.name] || ''
-        }))
+          value: formValues[item.title] || ''
+        })),
+        type: 1,
+        id: formId,
+        participant: wallet?.account?.address
       };
+      console.log('test233', updatedFormData);
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-form`, {
         method: "POST",
         headers: {
@@ -137,31 +144,9 @@ const FormPage = ({}) => {
         },
         body: JSON.stringify(updatedFormData),
       });
-      
-      const reader = response.body?.getReader();
-      const chunks: Uint8Array[] = [];
-      let done = false;
 
-      while (!done) {
-        const { value, done: readerDone } = await reader?.read()!;
-        if (value) {
-          chunks.push(value);
-        }
-        done = readerDone;
-      }
-
-      // 将 Uint8Array[] 转换为单个 Uint8Array
-      const combinedChunks = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-      let offset = 0;
-      for (const chunk of chunks) {
-        combinedChunks.set(chunk, offset);
-        offset += chunk.length;
-      }
-
-      // 1. 将数据转换为文本
-      const text = new TextDecoder().decode(combinedChunks);
-      console.log("Text:", text, JSON.parse(text));
-      const res = JSON.parse(text)
+      const res = await response.json();
+      console.log('响应数据:', res);
       
       if (res.code === 200) {
         confetti({
@@ -169,11 +154,7 @@ const FormPage = ({}) => {
           spread: 70,
           origin: { y: 0.6 }
         });
-        setIsSubmit(true)
-
-        const walrusData = JSON.parse(res.data);
-        console.log('test', walrusData);
-        
+        setIsSubmit(true)        
       } else {
         messageApi.open({
           type: 'error',
@@ -181,7 +162,8 @@ const FormPage = ({}) => {
         });
       }
     } catch (error) {
-      throw new Error("Submit failed")
+      console.log('test', error);
+      throw new Error("Submit failed", error)
     } finally {
       setSpinning(false)
     }
